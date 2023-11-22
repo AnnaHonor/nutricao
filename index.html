@@ -1,0 +1,103 @@
+<html>
+<head>
+    <link href="nutri.css"  type="text/css" rel="stylesheet">
+
+</head>
+</head>
+<body>
+    <script>let sections, tabs, tabNum, borderBar, vScroll, dir;
+        let currentScrollY, sectionScrollY;
+        let displacement;
+        let time = 120;
+        let accel;
+        
+        function scrollToSection(n){
+            tabNum = n;
+            resize();
+            currentScrollY = window.scrollY;
+            sectionScrollY = sections[tabNum].offsetTop;
+            dir = currentScrollY < sectionScrollY ? 1 : -1; 
+            displacement = Math.abs( currentScrollY - sectionScrollY );
+            vScroll = Math.abs( 2 * displacement / time );
+            accel = Math.abs( 2 * (displacement - (vScroll * time) ) / (time * time) );
+            console.log("direction: "+ dir);
+            console.log("acceleration: " + accel);
+            console.log("velocity: " + vScroll);  
+            console.log("displacement: " + displacement);
+            console.log("time: " + time);
+            console.log("------------------------");
+            animateScroll();
+        }
+        function animateScroll(){
+            vScroll -= accel;
+            window.scrollTo(0,currentScrollY + (vScroll * dir) );
+            currentScrollY = window.scrollY;
+        
+            //check if new position has been acheived within 30 units
+            displacement = Math.abs( window.scrollY - sectionScrollY);
+            console.log("velocity: " + vScroll);  
+            console.log("Difference: " + displacement);
+            if( displacement > 1 && vScroll > 0 ) requestAnimationFrame(animateScroll)
+            // else window.scrollTo(0, sectionScrollY);
+        }
+        
+        window.onload = function(){
+            sections = document.getElementsByClassName('section');   
+            tabs = document.getElementsByClassName('menu-item');   
+            borderBar = document.getElementsByClassName('border-bar')[0];   
+        }
+        window.onscroll = function(){
+          if(!sections) return;
+          for(let i = sections.length - 1; i >= 0; i--){
+            if(window.scrollY >= sections[i].offsetTop - 100){
+              tabNum = i;
+              resize();
+              break;
+            }
+          }
+          if(window.scrollY <= sections[0].offsetTop - 100){
+            borderBar.style.width = 0 + "px";
+            borderBar.style.left = tabNum ? tabs[tabNum].offsetLeft + "px" : tabs[0].offsetLeft + "px" ;
+          }
+        }
+        window.onresize = resize;
+        
+        function resize(){
+          borderBar.style.width = tabs[0].offsetWidth + "px";
+          borderBar.style.left = tabNum ? tabs[tabNum].offsetLeft + "px" : tabs[0].offsetLeft + "px" ;
+        }</script>
+    <section class="home-banner">
+      <div class="cover-banner">
+          <img title="" src="./imagens/nutri.jpg" alt=""/>
+          <h1></h1>
+      </div>
+    </section>
+
+    <nav class="menu">
+        <ul>
+            <li class="menu-item" onclick="scrollToSection(0)">CABEÇA</li>
+            <li class="menu-item" onclick="scrollToSection(1)">CORAÇÃO</li>
+            <li class="menu-item" onclick="scrollToSection(2)">FÍGADO</li>
+            <li class="menu-item" onclick="scrollToSection(3)">RINS</li>
+            <li class="menu-item" onclick="scrollToSection(4)">DICAS</li>
+            <div class="border-bar"></div>
+        </ul>
+    </nav>
+    <section class="section">
+      <h2 class="heading">
+        </h2>
+    </section>
+    <section class="section">
+      <h2 class="heading"></h2>
+    </section>
+    <section class="section">
+      <h2 class="heading"></h2>
+    </section>
+    <section class="section">
+      <h2 class="heading"></h2>
+    </section>
+    <section class="section">
+      <h2 class="heading"></h2>
+    </section>
+  </body>
+  </html>
